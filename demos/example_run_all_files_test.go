@@ -19,7 +19,7 @@ func Example_run_all_files() {
 		"submission3",
 		"submission4",
 		"submission5",
-		// "submission6", // TODO: still crashes the whole run.
+		"submission6",
 	}
 
 	results := []*task1.RunnerResult{}
@@ -57,6 +57,11 @@ func Example_run_all_files() {
 			interp.Evaluate("task1.CheckFilterGreaterValues")
 			if interp.Ok() {
 				f := interp.LastResult().(func(string))
+				defer func() {
+					if r := recover(); r != nil {
+						fmt.Printf("%s: Panic: %s\n", result.Submission, r)
+					}
+				}()
 				f(result.Submission)
 			} else {
 				fmt.Println(interp.LastError())
@@ -161,4 +166,6 @@ func Example_run_all_files() {
 	// submission5_FilterGreaterValues_30_empty: OK
 	// submission5_FilterGreaterValues_40_empty: OK
 	// submission5_FilterGreaterValues_50_empty: OK
+	//
+	// submission6: Panic: reflect: slice index out of range
 }
